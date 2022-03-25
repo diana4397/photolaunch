@@ -7,9 +7,6 @@ const userSchema = new mongoose.Schema({
     last_name: {
         type: String
     },
-    password: {
-        type: String
-    },
     email: {
         type: String
     },
@@ -28,16 +25,26 @@ const userSchema = new mongoose.Schema({
     zip_code: {
         type: Number
     },
-    customer_id: {
+    payment_status: {
+        type: String
+    },
+    transaction_id: {
         type: String
     },
     promocode: {
         type: String
     },
+    payable_amount: {
+        type: Number
+    },
     is_promocode_used: {
         type: Boolean,
         default: false
     },
+    school_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "schools"
+    }
 }, {
     timestamps: true
 });

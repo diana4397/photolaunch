@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "main": "server.js",
     "repository": "https://github.com/FBosler/fb-tutorial-social-login",
-    "author": "Fabian Bosler",
+    "author": "Micro Pets",
     "license": "MIT",
     "private": true,
     "scripts": {
@@ -29,6 +29,8 @@
         "multer-s3": "^2.10.0",
         "nodemailer": "^6.7.3",
         "passport": "^0.4.1",
-        "passport-local": "^1.0.0"
+        "passport-local": "^1.0.0",
+        "stripe": "^8.211.0",
+        "voucher-code-generator": "^1.2.0"
     }
 }

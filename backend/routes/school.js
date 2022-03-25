@@ -5,7 +5,6 @@ const upload = multer()
 const School = require('../models/Schools')
 const moment = require('moment')
 const mongoose = require('mongoose')
-const { ObjectId } = require('mongodb')
 router.post('/add-school', upload.array(), function (req, res) {
     let newSchool = new School(), body = req.body;
     newSchool.name = body.name;
@@ -16,8 +15,8 @@ router.post('/add-school', upload.array(), function (req, res) {
     newSchool.zip_code = body.zip_code
     newSchool.contact_name = body.contact_name
     newSchool.contact_email = body.contact_email
-    newSchool.start_date = moment(body.start_date, "YYYY-MM-DD HH:mm:ss")
-    newSchool.end_date = moment(body.end_date, "YYYY-MM-DD HH:mm:ss")
+    newSchool.start_date = new Date(body.start_date).toISOString()
+    newSchool.end_date = new Date(body.end_date).toISOString()
     let code = randomString()
     newSchool.code = code
     newSchool
@@ -26,7 +25,7 @@ router.post('/add-school', upload.array(), function (req, res) {
             return res.status(200).json({ success: `School Added Successfully`, data: school });
         })
         .catch(err => {
-            return done(null, false, { message: err });
+            return res.status(400).json({ errors: err });
         });
 });
 
@@ -66,7 +65,7 @@ router.post('/update', upload.array(), function (req, res) {
 module.exports = router;
 
 function randomString() {
-    let result = '', length = 6, chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let result = '', length = 10, chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
     return result;
 }

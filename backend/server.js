@@ -19,7 +19,7 @@ mongoose
 
 // Bodyparser middleware, extended false does not allow nested payloads
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 
 // Express Session
 app.use(
