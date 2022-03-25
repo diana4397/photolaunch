@@ -1,0 +1,67 @@
+body {
+    background: white;
+  }
+  @keyframes spinner {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .spinner-text {
+    position: fixed;
+    width: 290px;
+    height: 180px;
+    font-weight:800;
+    font-size:1.81rem;
+    top: 55%;
+    left: 40%;
+    right:40%;
+    @media screen and (max-width: 500px) {
+      top: 53.33%;
+      left: 25%;
+      right:25%;
+      font-size:1.5rem;
+      width: 50%;
+      height: 180px;
+  
+    }
+  
+  }
+  
+  .spinner {
+    position: fixed;
+    width: 32px;
+    height: 32px;
+    top: 50%;
+    left: 50%;
+    margin-left: -17px;
+    margin-top: -17px;
+    @media screen and (max-width: 500px) {
+      top: 50%;
+      left: 50%;
+      
+  
+    }
+  
+    &:after,
+    &:before {
+      content: '';
+      position: fixed;
+      border: 2px solid black;
+      width: 32px;
+      height: 32px;
+    }
+    &:after {
+      animation: spinner 1550ms linear infinite;
+    }
+    &:before {
+      width: 30px;
+      height: 30px;
+      margin-left: -40px;
+      margin-top: -1.5px;
+      animation: spinner 1550ms linear infinite;
+      animation-direction: reverse;
+    }
+  }
