@@ -7,6 +7,8 @@ const moment = require('moment')
 const mongoose = require('mongoose')
 router.post('/add-school', upload.array(), function (req, res) {
     let newSchool = new School(), body = req.body;
+    body.start_date = moment(body.start_date, "YYYY-MM-DD").startOf('day').format("YYYY-MM-DD HH:mm:ss")
+    body.end_date = moment(body.end_date, "YYYY-MM-DD").endOf('day').format("YYYY-MM-DD HH:mm:ss")
     newSchool.name = body.name;
     newSchool.address_line_1 = body.address_line_1
     newSchool.address_line_2 = body.address_line_2

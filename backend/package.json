@@ -2,7 +2,7 @@
     "name": "server",
     "version": "1.0.0",
     "main": "server.js",
-    "repository": "https://github.com/FBosler/fb-tutorial-social-login",
+    "repository": "",
     "author": "Micro Pets",
     "license": "MIT",
     "private": true,
