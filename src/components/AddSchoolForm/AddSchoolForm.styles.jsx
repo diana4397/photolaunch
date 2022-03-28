@@ -23,11 +23,16 @@ export const AddSchoolFormContainer = styled.div`
             flex-wrap: wrap;
             position: relative;
     
-            div{
+            > div{
                 display: flex;
                 flex-direction: column;
                 span{
                     font-size: 18px;
+                }
+            }
+            .react-datepicker__input-container{
+                input {
+                    width: 100%;
                 }
             }
             .address1, .address2, .school-name{

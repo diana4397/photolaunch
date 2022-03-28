@@ -1,9 +1,11 @@
 import React, { useState, useContext } from "react";
+import DatePicker from "react-datepicker";
 import CustomButton from "../../components/CustomButton/CustomButton.component";
 import {Input} from "../../components/Input/Input.component";
 import { Typography } from "../../screens/LandingPage/LandingPage.styles";
 import { SchoolContext } from "../../contexts/schoolContext";
 import { AddSchoolFormContainer } from "./AddSchoolForm.styles";
+import "react-datepicker/dist/react-datepicker.css";
 
 export const AddSchoolForm = () => {
     const [schoolData, setSchoolData] = useState({
@@ -15,6 +17,8 @@ export const AddSchoolForm = () => {
         zip: '',
         contactName: '',
         email: '',
+        startDate: '',
+        endDate: '',
     });
     const [code, setCode] = useState('');
     const [btnDisabled, setBtnDisabled] = useState(false);
@@ -80,6 +84,10 @@ export const AddSchoolForm = () => {
         setSchoolData(prevState => ({...prevState, [name]: value}));
     }
 
+    const handleDateChange = (date, name) => {
+        setSchoolData(prevState => ({...prevState, [name]: date}));
+    }
+
     return (
         <AddSchoolFormContainer>
             <div className="form-container">
@@ -101,6 +109,24 @@ export const AddSchoolForm = () => {
                     </div>
                     <div><span>State</span>
                         <Input required type='text' label='State' onChange={handleInputChange} name='state' value={schoolData.state} />
+                    </div>
+                    <div className="start-date"><span>Start Date</span>
+                        <DatePicker
+                            selected={schoolData.startDate}
+                            onChange={(date) => handleDateChange(date, 'startDate')}
+                            customInput={<Input />}
+                            dateFormat="yyyy-MM-dd"
+                        />
+                    </div>
+                    <div className="end-date"><span>End Date</span>
+                        <DatePicker
+                            selected={schoolData.endDate}
+                            disabled={!schoolData.startDate}
+                            minDate={schoolData.startDate}
+                            onChange={(date) => handleDateChange(date, 'endDate')}
+                            customInput={<Input />}
+                            dateFormat="yyyy-MM-dd"
+                        />
                     </div>
                     <div><span>Zip Code</span>
                         <Input required type='number' label='zipcode' onChange={handleInputChange} name='zip' value={schoolData.zip} />
