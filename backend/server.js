@@ -9,6 +9,7 @@ const user = require("./routes/user")
 const school = require('./routes/school')
 require('dotenv').config()
 const app = express();
+const cors = require("cors");
 const PORT = process.env.API_PORT;
 const MONGO_URI = "mongodb://127.0.0.1:27017/photo_launch";
 
@@ -34,6 +35,21 @@ app.use(
 // Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
+
+const corsOpts = {
+    origin: '*',
+
+    methods: [
+        'GET',
+        'POST',
+    ],
+
+    allowedHeaders: [
+        'Content-Type',
+    ],
+};
+app.use(cors(corsOpts));
+
 
 // Routes
 app.use("/api/admin", auth);
