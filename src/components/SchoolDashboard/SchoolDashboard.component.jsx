@@ -1,29 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import DataTable from 'react-data-table-component';
 import { SchoolDashboardContainer } from "./SchoolDashboard.styles";
-// import { SchoolContext } from '../../contexts/schoolContext';
+import { SchoolContext } from '../../contexts/schoolContext';
 import { CustomButton } from "../CustomButton/CustomButton.component";
 import { AddSchoolForm } from "../AddSchoolForm/AddSchoolForm.component";
-import { GetSchoolList, DeleteSchoolList } from "../../service/api";
+import { DeleteSchoolList } from "../../service/api";
 
 export const SchoolDashboard = () => {
     const [addSchoolForm, setAddSchoolForm] = useState(false);
-    const [schoolList, setSchoolList] = useState([]);
-    const [selectedData, setSelectedData] = useState();
-    // const schoolData = useContext(SchoolContext);
-    
-    useEffect(() => {
-        (async function() {
-            try {
-                const schoolList = await GetSchoolList();
-                const {data: {data}} = schoolList;
-                setSchoolList(data);
-            } catch (e) {
-                console.error(e);
-            }
-        })();
-    }, []);
-
+    const [selectedData, setSelectedData] = useState([]);
+    const [toggledClearRows, setToggledClearRows] = useState(false);
+    const schoolData = useContext(SchoolContext);
 
     const columns = [
         {
@@ -59,6 +46,16 @@ export const SchoolDashboard = () => {
             selector: row => row.contact_email,
         },
         {
+            name: 'Start Date',
+            selector: row => row.start_date,
+            cell: row => `${new Date(row.start_date).toISOString().slice(0, 10)}`,
+        },
+        {
+            name: 'End Date',
+            selector: row => row.end_date,
+            cell: row => `${new Date(row.end_date).toISOString().slice(0, 10)}`,
+        },
+        {
             name: 'Code',
             selector: row => row.code,
         },
@@ -76,12 +73,21 @@ export const SchoolDashboard = () => {
         const idArry = selectedData.map(({_id}) => _id);
         const { status } = await DeleteSchoolList(idArry);
         if(status === 200) {
-            const remainingSchool = selectedData.filter(value => !idArry.includes(value._id));
-            setSchoolList(remainingSchool);
+            const remainingSchool = schoolData.schoolList.filter(value => !idArry.includes(value._id));
+            schoolData.setSchoolList(remainingSchool);
             setSelectedData([]);
+            setToggledClearRows(!toggledClearRows);
         }
     };
 
+    const schoolAdded = () =>{
+        setAddSchoolForm(false);
+    }
+    
+    const updateSchool = () =>{
+        schoolFormOpen();
+    }
+    
     return(
         <SchoolDashboardContainer>
             {!addSchoolForm ?
@@ -89,16 +95,17 @@ export const SchoolDashboard = () => {
                 <div className="btn-action-wrp">
                     <CustomButton onClick={schoolFormOpen} className="btn-add-school" type='button'>Add School</CustomButton>
                     <CustomButton onClick={deleteSchool} className="btn-add-school" type='button' disabled={!selectedData?.length}>Delete</CustomButton>
-                    <CustomButton onClick={() => {}} className="btn-add-school" type='button' disabled={selectedData?.length !== 1}>Update</CustomButton>
+                    <CustomButton onClick={updateSchool} className="btn-add-school" type='button' disabled={selectedData?.length !== 1}>Update</CustomButton>
                 </div>
                 <DataTable
                     columns={columns}
-                    data={schoolList}
+                    data={schoolData.schoolList}
                     selectableRows
                     onSelectedRowsChange={handleChange}
+                    clearSelectedRows={toggledClearRows}
                 />
             </> : 
-            <AddSchoolForm />}
+            <AddSchoolForm schoolAdded={schoolAdded} selectedSchool={selectedData[0]} />}
         </SchoolDashboardContainer>
     )
 }
