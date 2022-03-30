@@ -9,6 +9,8 @@ const School = require("../models/Schools")
 const mongoose = require('mongoose')
 const voucher_codes = require('voucher-code-generator');
 const moment = require("moment")
+const mail = require('../common/mail')
+const mailformat = require("../common/email_format")
 require('dotenv').config()
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
 aws.config.update({
@@ -56,7 +58,7 @@ router.post('/register', uploads3.fields([{ name: "images" }]), async function (
                     newUser.payable_amount = Number(body.amount)
                     newUser.save().then(async result => {
                         let user_id = await result._id
-                        if (req.files && req.files.images.length > 0) {
+                        if (req.files && req.files.images && req.files.images.length > 0) {
                             for (let i = 0; i < files.images.length; i++) {
                                 let newImages = new UserImages()
                                 newImages.image = files.images[i].location
@@ -69,6 +71,7 @@ router.post('/register', uploads3.fields([{ name: "images" }]), async function (
                         }
 
                     }).catch(err => {
+                        console.log("errerr", err)
                         return res.status(400).json({ errors: err });
                     })
                 } else {
@@ -76,6 +79,7 @@ router.post('/register', uploads3.fields([{ name: "images" }]), async function (
                 }
             }
         }).catch(err => {
+            console.log("errerr11", err)
             return res.status(400).json({ errors: err });
         });
     } else {
@@ -134,13 +138,33 @@ router.post('/approved-reject-image', uploads3.array(), function (req, res) {
     if (approved_id) {
         approved_id = approved_id.split(",")
         approved_id.map(id => {
-            UserImages.findOneAndUpdate({ _id: mongoose.mongo.ObjectID(id) }, { $set: { status: 1 } }).then(result => { })
+            UserImages.findOneAndUpdate({ _id: mongoose.mongo.ObjectID(id) }, { $set: { status: 1 } }).then(result => {
+                User.find({ _id: mongoose.mongo.ObjectID(result.user_id) }).then(response => {
+                    let emailText = mailformat[3].body
+                    let mailDetails = {
+                        to: response[0].email,
+                        subject: mailformat[3].subject,
+                        html: emailText
+                    }
+                    mail.mail(mailDetails)
+                });
+            })
         })
     }
     if (rejected_id) {
         rejected_id = rejected_id.split(",")
         rejected_id.map(id => {
-            UserImages.findOneAndUpdate({ _id: mongoose.mongo.ObjectID(id) }, { $set: { status: 2 } }).then(result => { })
+            UserImages.findOneAndUpdate({ _id: mongoose.mongo.ObjectID(id) }, { $set: { status: 2 } }).then(result => {
+                User.find({ _id: mongoose.mongo.ObjectID(result.user_id) }).then(response => {
+                    let emailText = mailformat[2].body
+                    let mailDetails = {
+                        to: response[0].email,
+                        subject: mailformat[2].subject,
+                        html: emailText
+                    }
+                    mail.mail(mailDetails)
+                });
+            })
         })
     }
     return res.status(200).json({ success: `Success` });
@@ -169,6 +193,14 @@ router.post("/login-via-code", uploads3.array(), function (req, res) {
                         newUser.promocode = promocode[0];
                         newUser.school_id = school._id
                         newUser.save().then(result => {
+                            let emailText = mailformat[1].body
+                            emailText = emailText.replace(/{promo_code}/g, promocode[0])
+                            let mailDetails = {
+                                to: body.email,
+                                subject: mailformat[1].subject,
+                                html: emailText
+                            }
+                            mail.mail(mailDetails)
                             return res.status(200).json({ success: `Promocode Created Successfully`, data: result });
                         }).catch(err => {
                             return res.status(400).json({ errors: err });
