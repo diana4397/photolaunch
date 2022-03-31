@@ -22,7 +22,6 @@ const LaunchForm = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log('form submitted:');
         const isValid = validateDetails();
         if(isValid) {
             userData.setFirstName(firstName);
@@ -33,6 +32,18 @@ const LaunchForm = () => {
             userData.setState(state);
             userData.setZipCode(zipCode);
             userData.setEmail(email);
+            const obj = {
+                firstName,
+                lastName,
+                address1,
+                address2,
+                city,
+                state,
+                zipCode,
+                email
+            }
+            localStorage.setItem('userData', JSON.stringify(obj));
+
             navigate('/payment-form');
         }
     }
