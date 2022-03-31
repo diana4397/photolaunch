@@ -8,6 +8,7 @@ import { Login } from './screens/Login/Login.screen';
 import { AdminDashboard } from './screens/AdminDashboard/AdminDashboard.screen';
 import { PartneredSchool } from './screens/PartneredSchool/PartneredSchool.screen';
 import { UserProvider } from './contexts/userContext';
+import PrivateRoute from './components/PrivateRoute/PrivateRoute.component';
 import './App.css';
 
 const LaunchForm = lazy(() =>
@@ -38,11 +39,19 @@ function App() {
         element = { < Login / > }
         />  <
         Route exact path = '/dashboard'
+        element = { < PrivateRoute / > } >
+        <
+        Route exact path = '/dashboard'
         element = { < AdminDashboard / > }
-        />   <
+        /> < /
+        Route > <
+        Route exact path = '/school-onboard'
+        element = { < PrivateRoute / > } >
+        <
         Route exact path = '/school-onboard'
         element = { < AdminDashboard / > }
-        />   <
+        /> < /
+        Route > <
         Route exact path = '/partnered-school'
         element = { < PartneredSchool / > }
         />   < /
