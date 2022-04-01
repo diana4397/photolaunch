@@ -78,3 +78,12 @@ export const RegisterUser = (data) => {
     };
     return axios.post(concateUrl, bodyFormData, headers)
 }
+
+export const PromoCodeGenerate = (data) => {
+    const { email, schoolCode } = data;
+    const concateUrl = url + 'user/login-via-code';
+    const params = new URLSearchParams();
+    params.append('email', email);
+    params.append('code', schoolCode);
+    return axios.post(concateUrl, params);
+}

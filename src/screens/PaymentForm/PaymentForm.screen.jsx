@@ -28,6 +28,7 @@ export default function PaymentForm () {
 
   const checkBoxChange = (e) => {
     const name = e.target.getAttribute('data-type');
+    if(name === 'promoCheckbox') userData.setThumb([]); 
     setState({...state, [name]: !state[name] });
   }
 
@@ -36,7 +37,7 @@ export default function PaymentForm () {
   return (
     <PaymentFormContainer>
       <Elements stripe={stripePromise}>
-          <PhotoUploadForm />
+          <PhotoUploadForm promoValue={state.promoCheckbox} />
           <BillingDetailsContainer>
             <div className="billing-details">
               <div className="lbl-billing">Your Billing Details</div>

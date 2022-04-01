@@ -4,7 +4,7 @@ import CloudIcon from '../../assets/images/cloud-computing.png';
 import {UserContext} from '../../contexts/userContext';
 import { PhotoUploadFormContainer, StyledDiv, MediaPreview } from './UploadPhotoForm.styles';
 
-const PhotoUploadForm = () => {
+const PhotoUploadForm = ({promoValue}) => {
     const [isError, setIsError] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     // const [thumb, setThumb] = useState([]);
@@ -15,9 +15,10 @@ const PhotoUploadForm = () => {
         setIsError(false);
         setErrorMessage('');
         acceptedFiles.map(file => 
-            userData.setThumb(prevState => [...prevState, Object.assign(file, { preview: URL.createObjectURL(file) })])
+            !promoValue ? userData.setThumb(prevState => [...prevState, Object.assign(file, { preview: URL.createObjectURL(file) })]) :
+            userData.setThumb([Object.assign(file, { preview: URL.createObjectURL(file) })])
         );
-    }, [userData]);
+    }, [userData, promoValue]);
 
     const onDropReject = useCallback(acceptedFiles => {
         // Do something with the files
@@ -44,7 +45,7 @@ const PhotoUploadForm = () => {
     return (
         <PhotoUploadFormContainer>
             <div className='price-info'>$10 per image</div>
-            <Dropzone multiple={true} maxSize={4000000} onDropAccepted={onDrop} onDropRejected={onDropReject} accept=".png, .jpeg, .jpg">
+            <Dropzone multiple={!promoValue} maxSize={4000000} onDropAccepted={onDrop} onDropRejected={onDropReject} accept=".png, .jpeg, .jpg">
                 {({getRootProps, getInputProps}) => (
                     <StyledDiv className={isError ? 'upload-err' : ''} {...getRootProps({ refKey: 'innerRef' })}>
                         <input {...getInputProps()} />
