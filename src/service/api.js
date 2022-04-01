@@ -56,3 +56,25 @@ export const AdminLogin = (data) => {
     params.append('password', password);
     return axios.post(concateUrl, params);
 };
+
+export const RegisterUser = (data) => {
+    const { thumb, firstName, lastName, address1, address2, state, city, zipCode, email, amount, tokenId, promoCode } = data;
+    const concateUrl = url + 'user/register';
+    const bodyFormData = new FormData();
+    bodyFormData.append('images', thumb);
+    bodyFormData.append('first_name', firstName);
+    bodyFormData.append('last_name', lastName);
+    bodyFormData.append('address_line_1', address1);
+    bodyFormData.append('address_line_2', address2);
+    bodyFormData.append('state', state);
+    bodyFormData.append('city', city);
+    bodyFormData.append('zipcode', zipCode);
+    bodyFormData.append('email', email);
+    bodyFormData.append('amount', amount);
+    if (tokenId) bodyFormData.append('token_id', tokenId);
+    if (promoCode) bodyFormData.append('promo_code', promoCode);
+    const headers = {
+        "Content-Type": "multipart/form-data"
+    };
+    return axios.post(concateUrl, bodyFormData, headers)
+}

@@ -56,7 +56,7 @@ export default function PaymentForm () {
                 label="I understand my upload will be used to create a unique work of art that will be visible to the public and used by MicroPets at their discretion"
               />
               <Checkbox checkBoxChange={checkBoxChange} checkboxChecked={state.promoCheckbox} type="promoCheckbox" label="PROMO CODE?"/>
-              {!state.promoCheckbox ? <InjectedCheckoutForm /> : <PromocodeContainer />}
+              {!state.promoCheckbox ? <InjectedCheckoutForm consentValue={state.consentCheckbox} /> : <PromocodeContainer consentValue={state.consentCheckbox} />}
             </div>
         </BillingDetailsContainer>
       </Elements>
@@ -64,10 +64,10 @@ export default function PaymentForm () {
   )
 }
 
-const InjectedCheckoutForm = () => (
+const InjectedCheckoutForm = ({consentValue}) => (
   <ElementsConsumer>
     {({stripe, elements}) => (
-      <StripeContainer stripe={stripe} elements={elements} />
+      <StripeContainer stripe={stripe} consentValue={consentValue} elements={elements} />
     )}
   </ElementsConsumer>
 );

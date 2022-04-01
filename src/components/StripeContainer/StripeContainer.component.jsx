@@ -1,9 +1,14 @@
 import React from "react";
-// import { useNavigate } from "react-router-dom";
+import {Navigate} from "react-router-dom";
 import { CardElement } from "@stripe/react-stripe-js";
+import { toast } from 'react-toastify';
 // import CustomButton from "../Custom-button/custom-button.component";
 import {UserContext} from '../../contexts/userContext';
 import {StripeFormContainer} from "./StripeContainer.styles";
+import {RegisterUser} from '../../service/api';
+import 'react-toastify/dist/ReactToastify.css';
+
+toast.configure();
 
 const CARD_OPTIONS = {
   iconStyle: 'solid',
@@ -66,7 +71,7 @@ const DEFAULT_STATE = {
   error: null,
   cardComplete: false,
   processing: false,
-  paymentMethod: null,
+  payment: null,
 };
 
 class StripeContainer extends React.Component {
@@ -81,6 +86,9 @@ class StripeContainer extends React.Component {
 
     const {stripe, elements} = this.props;
     const {error, cardComplete} = this.state;
+    const {thumb, setThumb, firstName, setFirstName, lastName, setLastName, 
+      address1, setAddress1, address2, setAddress2, city, setCity, state, setState, 
+      zipCode, setZipCode, email, setEmail} = this.context;
 
     if (!stripe || !elements) {
       // Stripe.js has not loaded yet. Make sure to disable
@@ -103,18 +111,58 @@ class StripeContainer extends React.Component {
       this.setState({processing: true});
     }
 
-    const payload = await stripe.createPaymentMethod({
-      type: 'card',
-      card,
-    });
+    const result = await stripe.createToken(card);
+    if (result.error) {
+      this.setState({error: result.error});
+    } else {
+      const tokenId = result.token.id;
+      const amount = 10 * thumb.length;
+      const userDetails = JSON.parse(localStorage.getItem('userData'));
+      const reqObj = {
+        thumb,
+        firstName: firstName || userDetails?.firstName,
+        lastName: lastName || userDetails?.lastName,
+        address1: address1 || userDetails?.address1,
+        address2: address2 || userDetails?.address2,
+        state: state || userDetails?.state,
+        city: city || userDetails?.city,
+        zipCode: zipCode || userDetails?.zipCode,
+        email: email || userDetails?.email,
+        amount,
+        tokenId
+      }
+      try{
+        const {status} = await RegisterUser(reqObj);
+        if(status === 200) {
+          this.setState({ payment: true });
+          toast.success("Images successfully Uploaded");
+          setThumb([]);
+          setTimeout(() => {
+            localStorage.removeItem("userData");
+            setFirstName('');
+            setLastName('');
+            setAddress1('');
+            setAddress2('');
+            setCity('');
+            setState('');
+            setZipCode('');
+            setEmail('');
+            return <Navigate to="/launch-form" />
+          }, 6000);
+        }
+      }
+      catch(e) {
+        toast.error(e.response.data.errors);
+      }
+    }
 
     this.setState({processing: false});
 
-    if (payload.error) {
-      this.setState({error: payload.error});
-    } else {
-      this.setState({paymentMethod: payload.paymentMethod});
-    }
+    // if (payload.error) {
+    //   this.setState({error: payload.error});
+    // } else {
+    //   this.setState({paymentMethod: payload.paymentMethod});
+    // }
   };
 
   reset = () => {
@@ -122,20 +170,15 @@ class StripeContainer extends React.Component {
   };
 
   render() {
-    const {error, processing, paymentMethod} = this.state;
-    const {stripe} = this.props;
-    const {thumbLength} = this.context;
-    return paymentMethod ? (
+    const {error, processing, payment} = this.state;
+    const {stripe, consentValue} = this.props;
+    const {thumb} = this.context;
+    return payment ? (
       <StripeFormContainer>
         <div className="result">
           <div className="result-title" role="alert">
             Payment successful
           </div>
-          <div className="result-message">
-            Thanks for trying Stripe Elements. No money was charged, but we
-            generated a PaymentMethod: {paymentMethod.id}
-          </div>
-          {/* <ResetButton onClick={this.reset} /> */}
         </div>
       </StripeFormContainer>
     ) : (
@@ -152,8 +195,8 @@ class StripeContainer extends React.Component {
               />
           </div>
           {error && <ErrorMessage>{error.message}</ErrorMessage>}
-          <SubmitButton processing={processing} error={error} disabled={!stripe}>
-            {`Pay - $${10 * thumbLength}`}
+          <SubmitButton processing={processing} error={error?.message} disabled={!stripe || !thumb.length || !consentValue}>
+            {`Pay - $${10 * thumb.length}`}
           </SubmitButton>
         </form>
       </StripeFormContainer>

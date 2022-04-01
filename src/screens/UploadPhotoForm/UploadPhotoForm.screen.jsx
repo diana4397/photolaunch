@@ -1,4 +1,4 @@
-import React, {useCallback, useState, useContext, useEffect} from 'react';
+import React, {useCallback, useState, useContext} from 'react';
 import Dropzone from 'react-dropzone';
 import CloudIcon from '../../assets/images/cloud-computing.png';
 import {UserContext} from '../../contexts/userContext';
@@ -7,7 +7,7 @@ import { PhotoUploadFormContainer, StyledDiv, MediaPreview } from './UploadPhoto
 const PhotoUploadForm = () => {
     const [isError, setIsError] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const [thumb, setThumb] = useState([]);
+    // const [thumb, setThumb] = useState([]);
     const userData = useContext(UserContext);
 
     const onDrop = useCallback(acceptedFiles => {
@@ -15,13 +15,9 @@ const PhotoUploadForm = () => {
         setIsError(false);
         setErrorMessage('');
         acceptedFiles.map(file => 
-            setThumb(prevState => [...prevState, Object.assign(file, { preview: URL.createObjectURL(file) })])
+            userData.setThumb(prevState => [...prevState, Object.assign(file, { preview: URL.createObjectURL(file) })])
         );
-    }, []);
-
-    useEffect(() => {
-        userData.setThumbLength(thumb.length);
-    }, [userData, thumb])
+    }, [userData]);
 
     const onDropReject = useCallback(acceptedFiles => {
         // Do something with the files
@@ -42,7 +38,7 @@ const PhotoUploadForm = () => {
       }, []);
 
     const removeImage = (index) => {
-        setThumb(prevState => prevState.filter((thumb,i) => i !== index));
+        userData.setThumb(prevState => prevState.filter((thumb,i) => i !== index));
     }
 
     return (
@@ -67,7 +63,7 @@ const PhotoUploadForm = () => {
             </Dropzone>
             {isError && <span className='error-text'>{errorMessage}</span>}
             <MediaPreview>
-                {thumb.map((file, i) => (
+                {userData.thumb.map((file, i) => (
                     <div className='thumbnail-preview'>
                         <img src={file.preview} alt="preview" />
                         <div className='remove-icon'>
