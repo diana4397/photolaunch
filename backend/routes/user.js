@@ -38,50 +38,51 @@ router.post('/register', uploads3.fields([{ name: "images" }]), async function (
     let body = req.body;
     let files = req.files;
     if (!req.body.promo_code) {
-        User.find({ email: body.email }).then(async check_email => {
-            if (check_email.length > 0) {
-                return res.status(400).json({ errors: "User Already Exists" });
-            } else {
-                let charge_res = await createCharge(body.token_id, Number(body.amount))
-                if (charge_res && charge_res.id) {
-                    let newUser = new User()
-                    newUser.first_name = body.first_name
-                    newUser.last_name = body.last_name
-                    newUser.email = body.email
-                    newUser.address_line_1 = body.address_line_1
-                    newUser.address_line_2 = body.address_line_2
-                    newUser.city = body.city
-                    newUser.state = body.state
-                    newUser.zip_code = body.zip_code
-                    newUser.transaction_id = charge_res.id
-                    newUser.payment_status = charge_res.status
-                    newUser.payable_amount = Number(body.amount)
-                    newUser.save().then(async result => {
-                        let user_id = await result._id
-                        if (req.files && req.files.images && req.files.images.length > 0) {
-                            for (let i = 0; i < files.images.length; i++) {
-                                let newImages = new UserImages()
-                                newImages.image = files.images[i].location
-                                newImages.user_id = user_id;
-                                newImages.save().then(imgres => { })
-                            }
-                            return res.status(200).json({ success: `User Registered Successfully` });
-                        } else {
-                            return res.status(200).json({ success: `User Registered Successfully` });
-                        }
-
-                    }).catch(err => {
-                        console.log("errerr", err)
-                        return res.status(400).json({ errors: err });
-                    })
+        let charge_res = await createCharge(body.token_id, Number(body.amount))
+        if (charge_res && charge_res.id) {
+            let newUser = new User()
+            newUser.first_name = body.first_name
+            newUser.last_name = body.last_name
+            newUser.email = body.email
+            newUser.address_line_1 = body.address_line_1
+            newUser.address_line_2 = body.address_line_2
+            newUser.city = body.city
+            newUser.state = body.state
+            newUser.zip_code = body.zip_code
+            newUser.transaction_id = charge_res.id
+            newUser.payment_status = charge_res.status
+            newUser.payable_amount = Number(body.amount)
+            newUser.save().then(async result => {
+                let user_id = await result._id
+                if (req.files && req.files.images && req.files.images.length > 0) {
+                    for (let i = 0; i < files.images.length; i++) {
+                        let newImages = new UserImages()
+                        newImages.image = files.images[i].location
+                        newImages.user_id = user_id;
+                        newImages.save().then(imgres => { })
+                    }
+                    return res.status(200).json({ success: `User Registered Successfully` });
                 } else {
-                    return res.status(400).json({ errors: "There is some error while processing payment. Please try again later !" });
+                    return res.status(200).json({ success: `User Registered Successfully` });
                 }
-            }
-        }).catch(err => {
-            console.log("errerr11", err)
-            return res.status(400).json({ errors: err });
-        });
+
+            }).catch(err => {
+                console.log("errerr", err)
+                return res.status(400).json({ errors: err });
+            })
+        } else {
+            return res.status(400).json({ errors: "There is some error while processing payment. Please try again later !" });
+        }
+        // User.find({ email: body.email }).then(async check_email => {
+        //     if (check_email.length > 0) {
+        //         return res.status(400).json({ errors: "User Already Exists" });
+        //     } else {
+
+        //     }
+        // }).catch(err => {
+        //     console.log("errerr11", err)
+        //     return res.status(400).json({ errors: err });
+        // });
     } else {
         User.find({ promocode: body.promo_code }).then(promores => {
             if (promores.length > 0) {
@@ -100,16 +101,19 @@ router.post('/register', uploads3.fields([{ name: "images" }]), async function (
                     }
                     User.findOneAndUpdate({ email: body.email }, { $set: updated_body }).then(async result => {
                         let user_id = await promores._id
-                        if (req.files && req.files.images.length > 0) {
+                        if (req.files && req.files.images && req.files.images.length > 0) {
                             for (let i = 0; i < files.images.length; i++) {
                                 let newImages = new UserImages()
                                 newImages.image = files.images[i].location
                                 newImages.user_id = user_id;
-                                newImages.save().then(imgres => { })
+                                newImages.save().then(imgres => { }).catch(err => {
+                                    console.log("image error", err)
+                                })
                             }
                             return res.status(200).json({ success: `User Registered Successfully` });
                         }
                     }).catch(err => {
+                        console.log("errerr", err)
                         return res.status(400).json({ errors: err });
                     })
                 }
