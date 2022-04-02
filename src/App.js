@@ -18,8 +18,6 @@ function App() {
     return ( <
         UserProvider >
         <
-        div >
-        <
         GlobalStyle / >
         <
         Suspense fallback = { < GridLoader / > } >
@@ -56,9 +54,7 @@ function App() {
         element = { < PartneredSchool / > }
         />   < /
         Routes > <
-        /Suspense> < /
-        div >
-        <
+        /Suspense> <
         /UserProvider>
     );
 }

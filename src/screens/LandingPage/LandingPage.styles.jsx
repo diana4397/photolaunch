@@ -22,7 +22,7 @@ export const CustomButtonContainer = styled.div`
 display: flex;
 flex-direction: row;
 justify-content: space-between;
-min-height: 120px;
+// min-height: 120px;
 flex-wrap: wrap;
 `;
 

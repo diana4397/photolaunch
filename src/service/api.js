@@ -61,7 +61,9 @@ export const RegisterUser = (data) => {
     const { thumb, firstName, lastName, address1, address2, state, city, zipCode, email, amount, tokenId, promoCode } = data;
     const concateUrl = url + 'user/register';
     const bodyFormData = new FormData();
-    bodyFormData.append('images', thumb);
+    thumb.map((img) => {
+        bodyFormData.append('images', img);
+    })
     bodyFormData.append('first_name', firstName);
     bodyFormData.append('last_name', lastName);
     bodyFormData.append('address_line_1', address1);
@@ -85,5 +87,19 @@ export const PromoCodeGenerate = (data) => {
     const params = new URLSearchParams();
     params.append('email', email);
     params.append('code', schoolCode);
+    return axios.post(concateUrl, params);
+}
+
+export const UploadedImages = () => {
+    const concateUrl = url + `user/all-uploaded-images?page=1`;
+    return axios.get(concateUrl);
+}
+
+export const StatusChange = (data) => {
+    const { approvedId, rejectedId } = data;
+    const concateUrl = url + 'user/approved-reject-image';
+    const params = new URLSearchParams();
+    params.append('approved_id', approvedId);
+    params.append('rejected_id', rejectedId);
     return axios.post(concateUrl, params);
 }

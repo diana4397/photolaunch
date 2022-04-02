@@ -2,53 +2,109 @@ import React from "react";
 import Checkbox from '../Checkbox/Checkbox.component';
 import { UserDashboardContainer, DashboardImagesContainer } from "./UserDashboard.styles";
 import { CustomButton } from "../CustomButton/CustomButton.component";
+import {UploadedImages, StatusChange} from '../../service/api';
 
+const limit = 20;
+class UserDashboard extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            uploadedImages: [],
+            page: 1,
+            total: 0,
+        }
+    }
 
-const data = [
-    "https://images.unsplash.com/photo-1597431824273-fd1ec691a0e7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY0ODA1NTMwOA&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080",
-    "https://images.unsplash.com/photo-1612177241462-d254edf4e823?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY0ODA1NTM1MQ&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080",
-    "https://images.unsplash.com/photo-1608231975456-2f2d9fb1b49b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY0ODA1NTM2Ng&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080",
-    "https://images.unsplash.com/photo-1593013919627-658d3aafd23d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY0ODA1NTM2OA&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080",
-    "https://images.unsplash.com/photo-1608229191360-7064b0afa639?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY0ODA1NTM3MQ&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080",
-    "https://images.unsplash.com/photo-1597429554061-25d8068d6b3f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY0ODA1NTM4Mg&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080",
-    "https://images.unsplash.com/photo-1597429554061-25d8068d6b3f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY0ODA1NTM4Mw&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080",
-    "https://images.unsplash.com/photo-1597431793715-b4b71ddb5670?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY0ODA1NTM4NQ&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080",
-    "https://images.unsplash.com/photo-1597428963794-aba7182f3abf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY0ODA1NTM4OQ&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080",
-    "https://images.unsplash.com/photo-1608229063899-4fd8fb97969b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY0ODA1NTM5NQ&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080",
-    "https://images.unsplash.com/photo-1597431793715-b4b71ddb5670?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY0ODA1NTQwNw&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080",
-    "https://images.unsplash.com/photo-1597431824273-fd1ec691a0e7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY0ODA1NTMwOA&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080",
-    "https://images.unsplash.com/photo-1612177241462-d254edf4e823?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY0ODA1NTM1MQ&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080",
-    "https://images.unsplash.com/photo-1608231975456-2f2d9fb1b49b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY0ODA1NTM2Ng&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080",
-    "https://images.unsplash.com/photo-1597429554061-25d8068d6b3f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY0ODA1NTM4Mg&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080",
-    "https://images.unsplash.com/photo-1597429554061-25d8068d6b3f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY0ODA1NTM4Mw&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080",
-    "https://images.unsplash.com/photo-1597431793715-b4b71ddb5670?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY0ODA1NTM4NQ&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080",
-    "https://images.unsplash.com/photo-1597428963794-aba7182f3abf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY0ODA1NTM4OQ&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080", 
-]
+    componentDidMount() {
+        this.fetchImages();
+    }
 
-// const ImagesList = () => {
-//     const images = [];
-//     for(let i = 0; i < 30; i++) {
-//         images.push(<img src="https://source.unsplash.com/user/c_v_r" alt="sample" />);
-//     }
-//     return images;
-// }
+    fetchImages = async () => {
+        let {data: {data, total_count}} = await UploadedImages();
+        data = data.map((imgObj) => ({...imgObj, isChecked: true}));
+        this.setState({
+            uploadedImages: data,
+            total: total_count
+        })
+    }
 
-export const UserDashboard = () => {
-    return(
-        <UserDashboardContainer>
-            <DashboardImagesContainer>
-                {data.map(img => (
-                    <div className="img-card">
-                        <img src={img} alt={img} />
-                        <Checkbox  
-                        />
-                    </div>
-                ))}
-            </DashboardImagesContainer>
-            <div className="btn-wrp">
-                <CustomButton  type='button'> Batch Reject </CustomButton>
-                <CustomButton  type='button'> Confirm Selection </CustomButton>
-            </div>
-        </UserDashboardContainer>
-    )
+    checkBoxChange = (i) => {
+        const { uploadedImages } = this.state;
+        const temp = [...uploadedImages];
+        const tempElement = temp[i];
+        tempElement.isChecked = !tempElement.isChecked;
+        temp[i] = tempElement;
+        this.setState({
+            uploadedImages: temp,
+        })
+    }
+
+    handleStatusChange = async (operation) => {
+        const { uploadedImages, total, page } = this.state;
+        let checkedImages = uploadedImages.filter(img => img.isChecked);
+        checkedImages = checkedImages.map(({_id}) => _id);
+        let unCheckedImages = uploadedImages.filter(img => !img.isChecked);
+        unCheckedImages = unCheckedImages.map(({_id}) => _id);
+        let reqObj;
+        switch(operation) {
+            case 'reject':
+                reqObj = {
+                    approvedId: unCheckedImages,
+                    rejectedId: checkedImages
+                }
+                break;
+            case 'confirm':
+                reqObj = {
+                    approvedId: checkedImages,
+                    rejectedId: unCheckedImages
+                }
+                break;
+            default: break;
+        }
+        const {status} = await StatusChange(reqObj);
+        if(status === 200){
+            if(total - (page * limit) > 0){
+                this.setState(prevState => ({
+                    page: prevState.page + 1
+                }), () => {
+                    this.fetchImages();
+                })
+            }else{
+                this.setState({ uploadedImages: [] });
+            }
+        }
+    }
+
+    render() {
+        const { uploadedImages, total, page } = this.state;
+        return(
+            <UserDashboardContainer>
+                <div className="remaining-page">Remaining Page: {Math.trunc(total / ((page * limit) - 1))}</div>
+                <div className="remaining-images">Remaining Image: {total - (page * limit) > 0 ? total - (page * limit) : 0 }</div>
+                {!uploadedImages.length ? <h1 className="text-center">No Image Found!</h1> :
+                    <>
+                        <DashboardImagesContainer>
+                            {uploadedImages.map((img,i) => (
+                                <div className="img-card" key={img._id}>
+                                    <img src={img.image} alt={img._id} />
+                                    <Checkbox
+                                        type={img._id}
+                                        checkBoxChange={() => this.checkBoxChange(i)} 
+                                        checkboxChecked={img.isChecked} 
+                                    />
+                                </div>
+                            ))}
+                        </DashboardImagesContainer>
+                        <div className="btn-wrp">
+                            <CustomButton onClick={() => this.handleStatusChange('reject')} type='button'> Batch Reject </CustomButton>
+                            <CustomButton onClick={() => this.handleStatusChange('confirm')} type='button'> Confirm Selection </CustomButton>
+                        </div>
+                    </>
+                }
+            </UserDashboardContainer>
+        )
+    }
+
 }
+
+export default UserDashboard;

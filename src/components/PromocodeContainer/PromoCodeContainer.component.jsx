@@ -9,6 +9,7 @@ import { UserContext } from '../../contexts/userContext';
 
 const PromocodeContainer = ({ consentValue }) => {
     const [promoCode, setPromoCode] = useState('');
+    const [payment, setPayment] = useState(false);
     const userData = useContext(UserContext);
     let navigate = useNavigate();
 
@@ -18,7 +19,7 @@ const PromocodeContainer = ({ consentValue }) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-    
+        toast.configure();
         const {thumb, setThumb, firstName, setFirstName, lastName, setLastName, 
           address1, setAddress1, address2, setAddress2, city, setCity, state, setState, 
           zipCode, setZipCode, email, setEmail} = userData;
@@ -41,7 +42,7 @@ const PromocodeContainer = ({ consentValue }) => {
           try{
             const {status} = await RegisterUser(reqObj);
             if(status === 200) {
-              this.setState({ payment: true });
+              setPayment(true);
               toast.success("Images successfully Uploaded");
               setThumb([]);
               setTimeout(() => {
@@ -65,6 +66,12 @@ const PromocodeContainer = ({ consentValue }) => {
 
     return(
         <PromoContainer>
+          {payment ? 
+              <div className="result">
+                <div className="result-title" role="alert">
+                  Payment successful
+                </div>
+              </div> :
             <form onSubmit={handleSubmit}>
                 <div className="promo-text">
                     <span>Promo Code</span>
@@ -72,6 +79,7 @@ const PromocodeContainer = ({ consentValue }) => {
                 </div>
                 <CustomButton disabled={!userData.thumb.length || !consentValue}  type='submit'> Verify Promo Code </CustomButton>
             </form>
+          }
         </PromoContainer>
     )
 }

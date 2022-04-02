@@ -3,6 +3,11 @@ import styled from 'styled-components';
 export const UserDashboardContainer = styled.div`
     padding: 30px 30px 0 30px;
     flex: 1;
+
+    .remaining-page, .remaining-images {
+        margin-bottom: 20px;
+    }
+
     .btn-wrp{
         text-align: center;
         margin: 10px 0;

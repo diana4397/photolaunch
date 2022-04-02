@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import CustomButton from "../../components/CustomButton/CustomButton.component";
@@ -14,6 +14,11 @@ import { ImageContainer } from "../../components/ImageContainer/ImageContainer.c
 
 export const LandingPage = () => {
     let navigate = useNavigate();
+
+    useEffect(() => {
+        localStorage.removeItem("userData");
+    }, []);
+
     return (
         <PageMainContainer>
             <ImageContainer />

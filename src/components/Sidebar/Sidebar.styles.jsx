@@ -15,6 +15,10 @@ export const SidebarContainer = styled.div`
         padding: 8px 15px;
         position: relative;
 
+        &:nth-last-child(1) {
+            margin-top: 50px;
+        }
+
         &.active{
             background: rgb(147 12 208);
 

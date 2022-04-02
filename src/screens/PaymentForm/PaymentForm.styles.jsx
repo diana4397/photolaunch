@@ -8,12 +8,21 @@ export const PaymentFormContainer = styled.div`
     width: 100%;
     display: flex;
     align-items: flex-start;
+
+    @media (max-width: 767px) {
+        flex-direction: column;
+    }
 `;
 
 export const BillingDetailsContainer = styled.div`
     // display: flex;
     flex: 1;
     padding-left: 20px;
+
+    @media (max-width: 767px) {
+        padding-left: 0;
+    }
+
     .billing-details{
         margin-bottom: 30px;
         .lbl-billing{

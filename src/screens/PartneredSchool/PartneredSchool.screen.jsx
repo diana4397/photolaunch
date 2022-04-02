@@ -50,7 +50,7 @@ export const PartneredSchool = () => {
             }
             try{
                 const {data: {data}} = await PromoCodeGenerate(req);
-                toast.error(`Promo code sent to ${data.email}`);
+                toast.success(`Promo code sent to ${data.email}`);
                 setFormData({
                     email: '',
                     schoolCode: ''
