@@ -88,6 +88,8 @@ router.post('/register', uploads3.fields([{ name: "images" }]), async function (
             if (promores.length > 0) {
                 if (promores[0].is_promocode_used) {
                     return res.status(400).json({ errors: "Promocode is already been used once." });
+                } else if (promores[0].email !== body.email) {
+                    return res.status(400).json({ errors: "This Promocode is not linked with provided email." });
                 } else {
                     let updated_body = {
                         first_name: body.first_name,
