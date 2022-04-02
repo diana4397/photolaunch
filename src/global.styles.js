@@ -25,5 +25,7 @@ export const GlobalStyle = createGlobalStyle `
 		margin-bottom: 20px;
 		background-color: #fff;
 	}
-
+	.text-center {
+		text-align: center;
+	}
 `;

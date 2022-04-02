@@ -61,7 +61,9 @@ export const RegisterUser = (data) => {
     const { thumb, firstName, lastName, address1, address2, state, city, zipCode, email, amount, tokenId, promoCode } = data;
     const concateUrl = url + 'user/register';
     const bodyFormData = new FormData();
-    bodyFormData.append('images', thumb);
+    thumb.map((img) => {
+        bodyFormData.append('images', img);
+    })
     bodyFormData.append('first_name', firstName);
     bodyFormData.append('last_name', lastName);
     bodyFormData.append('address_line_1', address1);
@@ -86,4 +88,9 @@ export const PromoCodeGenerate = (data) => {
     params.append('email', email);
     params.append('code', schoolCode);
     return axios.post(concateUrl, params);
+}
+
+export const UploadedImages = (page) => {
+    const concateUrl = url + `user/all-uploaded-images?page=${page}`;
+    return axios.get(concateUrl);
 }

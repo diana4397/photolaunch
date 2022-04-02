@@ -16,6 +16,11 @@ justify-content: center;
 height: 100%;
 width: 100%;
 
+@media screen and (max-width: 992px) {
+    padding-right: 0;
+    align-items: center;
+}
+
     p{
         align-self: flex-start;
     }
@@ -30,6 +35,12 @@ width: 100%;
         div{
             display: flex;
             flex-direction: column;
+
+            @media screen and (max-width: 520px) {
+                grid-column-start: 1;
+                grid-column-end: 3;
+            }
+
             span{
                 font-size: 18px;
             }

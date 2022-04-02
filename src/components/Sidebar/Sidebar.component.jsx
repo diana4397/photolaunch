@@ -10,6 +10,9 @@ const MenuItems = [
     }, {
         'label': 'School Onboard',
         'link': '/school-onboard'
+    }, {
+        'label': 'Logout',
+        'link': '/'
     }
 ]
 
