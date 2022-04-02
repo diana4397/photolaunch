@@ -90,7 +90,16 @@ export const PromoCodeGenerate = (data) => {
     return axios.post(concateUrl, params);
 }
 
-export const UploadedImages = (page) => {
-    const concateUrl = url + `user/all-uploaded-images?page=${page}`;
+export const UploadedImages = () => {
+    const concateUrl = url + `user/all-uploaded-images?page=1`;
     return axios.get(concateUrl);
+}
+
+export const StatusChange = (data) => {
+    const { approvedId, rejectedId } = data;
+    const concateUrl = url + 'user/approved-reject-image';
+    const params = new URLSearchParams();
+    params.append('approved_id', approvedId);
+    params.append('rejected_id', rejectedId);
+    return axios.post(concateUrl, params);
 }

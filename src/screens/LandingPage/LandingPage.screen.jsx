@@ -10,7 +10,6 @@ import {
         }
 from "./LandingPage.styles";
 import { ImageContainer } from "../../components/ImageContainer/ImageContainer.component";
-import { RemoveCookie } from '../../service/helper';
 
 
 export const LandingPage = () => {
@@ -18,7 +17,6 @@ export const LandingPage = () => {
 
     useEffect(() => {
         localStorage.removeItem("userData");
-        RemoveCookie('token');
     }, []);
 
     return (
