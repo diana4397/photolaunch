@@ -1,5 +1,4 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
 import { CardElement } from "@stripe/react-stripe-js";
 import { toast } from 'react-toastify';
 // import CustomButton from "../Custom-button/custom-button.component";
@@ -145,7 +144,9 @@ class StripeContainer extends React.Component {
           setState('');
           setZipCode('');
           setEmail('');
-          return <Navigate to="/success-page" />
+          // return (<Navigate to="/success-page" />);
+          window.location.href = '/success-page'; 
+          // return (<Route path="/success-page" />);
         }
       }
       catch (e) {
