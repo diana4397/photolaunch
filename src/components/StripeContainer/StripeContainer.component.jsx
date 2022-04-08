@@ -1,11 +1,11 @@
 import React from "react";
-import {Navigate} from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { CardElement } from "@stripe/react-stripe-js";
 import { toast } from 'react-toastify';
 // import CustomButton from "../Custom-button/custom-button.component";
-import {UserContext} from '../../contexts/userContext';
-import {StripeFormContainer} from "./StripeContainer.styles";
-import {RegisterUser} from '../../service/api';
+import { UserContext } from '../../contexts/userContext';
+import { StripeFormContainer } from "./StripeContainer.styles";
+import { RegisterUser } from '../../service/api';
 import 'react-toastify/dist/ReactToastify.css';
 
 toast.configure();
@@ -34,13 +34,13 @@ const CARD_OPTIONS = {
   },
 };
 
-const CardField = ({onChange}) => (
+const CardField = ({ onChange }) => (
   <div className="form-row">
     <CardElement options={CARD_OPTIONS} onChange={onChange} />
   </div>
 );
 
-const SubmitButton = ({processing, error, children, disabled}) => (
+const SubmitButton = ({ processing, error, children, disabled }) => (
   <button
     className={`submit-button ${error ? 'submit-error' : ''}`}
     type="submit"
@@ -50,7 +50,7 @@ const SubmitButton = ({processing, error, children, disabled}) => (
   </button>
 );
 
-const ErrorMessage = ({children}) => (
+const ErrorMessage = ({ children }) => (
   <div className="error-message" role="alert">
     <svg width="16" height="16" viewBox="0 0 17 17">
       <path
@@ -84,11 +84,11 @@ class StripeContainer extends React.Component {
   handleSubmit = async (event) => {
     event.preventDefault();
 
-    const {stripe, elements} = this.props;
-    const {error, cardComplete} = this.state;
-    const {thumb, setThumb, firstName, setFirstName, lastName, setLastName, 
-      address1, setAddress1, address2, setAddress2, city, setCity, state, setState, 
-      zipCode, setZipCode, email, setEmail} = this.context;
+    const { stripe, elements } = this.props;
+    const { error, cardComplete } = this.state;
+    const { thumb, setThumb, firstName, setFirstName, lastName, setLastName,
+      address1, setAddress1, address2, setAddress2, city, setCity, state, setState,
+      zipCode, setZipCode, email, setEmail } = this.context;
 
     if (!stripe || !elements) {
       // Stripe.js has not loaded yet. Make sure to disable
@@ -108,12 +108,12 @@ class StripeContainer extends React.Component {
     }
 
     if (cardComplete) {
-      this.setState({processing: true});
+      this.setState({ processing: true });
     }
 
     const result = await stripe.createToken(card);
     if (result.error) {
-      this.setState({error: result.error});
+      this.setState({ error: result.error });
     } else {
       const tokenId = result.token.id;
       const amount = 10 * thumb.length;
@@ -131,14 +131,14 @@ class StripeContainer extends React.Component {
         amount,
         tokenId
       }
-      try{
-        const {status} = await RegisterUser(reqObj);
-        if(status === 200) {
+      try {
+        const { status } = await RegisterUser(reqObj);
+        if (status === 200) {
           this.setState({ payment: true });
           toast.success("Images successfully Uploaded");
           setThumb([]);
           setTimeout(() => {
-            localStorage.removeItem("userData");
+            // localStorage.removeItem("userData");
             setFirstName('');
             setLastName('');
             setAddress1('');
@@ -147,16 +147,16 @@ class StripeContainer extends React.Component {
             setState('');
             setZipCode('');
             setEmail('');
-            return <Navigate to="/launch-form" />
-          }, 6000);
+            return <Navigate to="/success-page" />
+          }, 60);
         }
       }
-      catch(e) {
+      catch (e) {
         toast.error(e.response.data.errors);
       }
     }
 
-    this.setState({processing: false});
+    this.setState({ processing: false });
 
     // if (payload.error) {
     //   this.setState({error: payload.error});
@@ -170,9 +170,9 @@ class StripeContainer extends React.Component {
   };
 
   render() {
-    const {error, processing, payment} = this.state;
-    const {stripe, consentValue} = this.props;
-    const {thumb} = this.context;
+    const { error, processing, payment } = this.state;
+    const { stripe, consentValue } = this.props;
+    const { thumb } = this.context;
     return payment ? (
       <StripeFormContainer>
         <div className="result">
@@ -185,19 +185,20 @@ class StripeContainer extends React.Component {
       <StripeFormContainer>
         <form onSubmit={this.handleSubmit}>
           <div className="form-group">
-              <CardField
-                onChange={(event) => {
-                  this.setState({
-                    error: event.error,
-                    cardComplete: event.complete,
-                  });
-                }}
-              />
+            <CardField
+              onChange={(event) => {
+                this.setState({
+                  error: event.error,
+                  cardComplete: event.complete,
+                });
+              }}
+            />
           </div>
           {error && <ErrorMessage>{error.message}</ErrorMessage>}
           <SubmitButton processing={processing} error={error?.message} disabled={!stripe || !thumb.length || !consentValue}>
             {`Pay - $${10 * thumb.length}`}
           </SubmitButton>
+          <small className="note">Note : * You need to agree to the terms and Conditions to move further </small>
         </form>
       </StripeFormContainer>
     );

@@ -85,5 +85,8 @@ export const StripeFormContainer = styled.div`
             margin-right: 10px;
         }
     }
+    .note{
+        margin-left : 25px
+    }
 
 `;
