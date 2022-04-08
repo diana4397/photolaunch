@@ -135,20 +135,17 @@ class StripeContainer extends React.Component {
         const { status } = await RegisterUser(reqObj);
         if (status === 200) {
           this.setState({ payment: true });
-          toast.success("Images successfully Uploaded");
           setThumb([]);
-          setTimeout(() => {
-            // localStorage.removeItem("userData");
-            setFirstName('');
-            setLastName('');
-            setAddress1('');
-            setAddress2('');
-            setCity('');
-            setState('');
-            setZipCode('');
-            setEmail('');
-            return <Navigate to="/success-page" />
-          }, 60);
+          // localStorage.removeItem("userData");
+          setFirstName('');
+          setLastName('');
+          setAddress1('');
+          setAddress2('');
+          setCity('');
+          setState('');
+          setZipCode('');
+          setEmail('');
+          return <Navigate to="/success-page" />
         }
       }
       catch (e) {

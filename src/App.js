@@ -7,6 +7,7 @@ import PaymentForm from './screens/PaymentForm/PaymentForm.screen';
 import { Login } from './screens/Login/Login.screen';
 import { AdminDashboard } from './screens/AdminDashboard/AdminDashboard.screen';
 import { PartneredSchool } from './screens/PartneredSchool/PartneredSchool.screen';
+import SuccessPage from './screens/SuccessPage/SuccessPage.screen';
 import { UserProvider } from './contexts/userContext';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute.component';
 import './App.css';
@@ -32,7 +33,10 @@ function App() {
         /> <
         Route exact path = '/payment-form'
         element = { < PaymentForm / > }
-        />  <
+        /> <
+        Route exact path = '/success-page'
+        element = { < SuccessPage / > }
+        /> <
         Route exact path = '/admin/login'
         element = { < Login / > }
         />  <
@@ -54,8 +58,8 @@ function App() {
         element = { < PartneredSchool / > }
         />   < /
         Routes > <
-        /Suspense> <
-        /UserProvider>
+        /Suspense> < /
+        UserProvider >
     );
 }
 
