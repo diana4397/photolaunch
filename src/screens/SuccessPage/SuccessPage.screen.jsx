@@ -1,6 +1,6 @@
 import React from "react";
 import { SuccessPageContainer } from "./SuccessPage.styles"
-import { FacebookShareCount, TwitterShareButton, FacebookShareButton, FacebookIcon, TwitterIcon} from "react-share";
+import { TwitterShareButton, FacebookShareButton, FacebookIcon, TwitterIcon, PinterestShareButton, PinterestIcon} from "react-share";
 import { useNavigate } from "react-router-dom";
 
 const SuccessPage = () => {
@@ -22,22 +22,16 @@ const SuccessPage = () => {
             <div className="share">
                 <div className="fb-wrp">
                     <FacebookShareButton
-                        url="https://facebook.com/"
+                        url="https://photolaunchs.s3.amazonaws.com/Sample-jpg-image-100kb.jpg"
                         quote="Check out this picture I just signed up to launch into deep space!!!"
                         hashtag="MicroPets"
                     >
                         <FacebookIcon size={32} round />
                     </FacebookShareButton>
-
-                    <div>
-                    <FacebookShareCount url="https://facebook.com/">
-                        {count => count}
-                    </FacebookShareCount>
-                    </div>
                 </div>
                 <div className="twitter-wrp">
                     <TwitterShareButton
-                        url="https://twitter.com/"
+                        url="https://photolaunchs.s3.amazonaws.com/Sample-jpg-image-100kb.jpg"
                         title="Check out this picture I just signed up to launch into deep space!!!"
                         className="Demo__some-network__share-button"
                         hashtags={["MicroPets"]}
@@ -45,10 +39,15 @@ const SuccessPage = () => {
                         <TwitterIcon size={32} round />
                     </TwitterShareButton>
                 </div>
-
-                {/* <FacebookShareButton network="facebook" url="https://facebook.com/" bgColor="rgb(0, 172, 237)" fgColor="#fff" style={{ margin: "10px" }} /> */}
-                {/* <SocialIcon network="instagram" url="https://instagram.com/" fgColor="#fff" style={{ margin: "10px" }} /> */}
-                {/* <SocialIcon network="twitter" url="https://twitter.com/" fgColor="#fff" style={{ margin: "10px" }} /> */}
+                <div className="pinterest-wrp">
+                    <PinterestShareButton
+                        url={String(window.location)}
+                        media='https://photolaunchs.s3.amazonaws.com/Sample-jpg-image-100kb.jpg'
+                        className="Demo__some-network__share-button"
+                    >
+                        <PinterestIcon size={32} round />
+                    </PinterestShareButton>
+                </div>
                 <button className="upload-button" type='submit' onClick={uploadPhoto} > Upload Another Photo </button>
             </div>
             <button className="home upload-button" onClick={gotohome}  > Home </button>

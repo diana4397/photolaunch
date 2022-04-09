@@ -16,7 +16,7 @@ export const SuccessPageContainer = styled.div`
         display: flex;
         align-items: center;
 
-        .fb-wrp, .twitter-wrp {
+        .fb-wrp, .twitter-wrp, .pinterest-wrp {
             margin-right: 15px;
         }
     }
